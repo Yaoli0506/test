@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksrcb.api.biz.mapper.MenuMapper">
+    <resultMap id="funcList" type="map">
+        <result column="func_id" property="FuncId" jdbcType="VARCHAR" />
+        <result column="state" property="State" jdbcType="VARCHAR" />
+        <result column="order_id" property="OrderId" jdbcType="VARCHAR" />
+        <result column="parent_id" property="ParentId" jdbcType="VARCHAR" />
+        <result column="role_id" property="RoleId" jdbcType="VARCHAR" />
+        <result column="menu_name" property="MenuName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="qryMenu" parameterType="map" resultMap="funcList">
+    SELECT
+        f.func_id,
+        f.state,
+        m.parent_id,
+        m.order_id,
+        m.menu_name
+    FROM
+	    func f
+	    left join menu m on m.menu_id = f.func_id
+    WHERE
+	    role_id = #{roleId}
+	    and m.parent_id not in  ('0')
+	    ORDER BY order_id
+    </select>
+</mapper>

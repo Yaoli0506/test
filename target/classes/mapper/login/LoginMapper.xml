@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ksrcb.api.biz.mapper.LoginMapper">
+    <resultMap id="loginUserMap" type="map">
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+        <result column="user_type" property="userType" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR" />
+        <result column="asso_role" property="assoRole" jdbcType="VARCHAR" />
+        <result column="belong_system" property="belongSystem" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="qryUserByName" parameterType="com.ksrcb.api.biz.model.system.User" resultType="com.ksrcb.api.biz.model.system.User">
+        SELECT
+            user_id,
+            username,
+            PASSWORD,
+            salt,
+            user_type,
+            state,
+            mobile,
+            email,
+            create_time,
+            update_time,
+            asso_role,
+            name,
+            department,
+            systemMgmr,
+            belong_system
+        FROM
+        USER
+        where
+            username = #{username}
+    </select>
+
+    <select id="qryUserById" parameterType="com.ksrcb.api.biz.model.system.User" resultType="com.ksrcb.api.biz.model.system.User">
+        SELECT
+            user_id,
+            username,
+            PASSWORD,
+            salt,
+            user_type,
+            state,
+            mobile,
+            email,
+            create_time,
+            update_time,
+            asso_role,
+            NAME,
+            department,
+            systemMgmr,
+            belong_system
+        FROM
+        USER
+        where
+            user_id = #{userId}
+    </select>
+
+    <select id="qryRoleByUserId"  resultType="com.ksrcb.api.biz.model.system.UserRole">
+        SELECT
+            user_id,
+	        role_id
+        FROM
+	        user_role
+        WHERE
+	        user_id = #{userId}
+    </select>
+
+    <select id="qryfuncsByRoleId" resultType="com.ksrcb.api.biz.model.system.Func">
+        SELECT
+	        func_id,
+	        role_id,
+	        menu_id
+        FROM
+	        func
+        WHERE
+	        role_id = #{roleId}
+    </select>
+
+    <select id="qryUserInfo"  resultType="com.ksrcb.api.biz.model.system.UserInfo">
+    SELECT
+        u.user_id,
+        u.username,
+        u.user_type,
+        u.state,
+        u.mobile,
+        u.email,
+        u.create_time,
+        u.update_time,
+        u.asso_role,
+        u.NAME,
+        u.department,
+        u.systemMgmr,
+        u.belong_system,
+        ur.role_id
+    FROM
+        USER u
+        LEFT JOIN user_role ur ON ur.user_id = u.user_id
+    WHERE
+	    u.username = #{username}
+    </select>
+
+    <resultMap id="roleList" type="map">
+        <result column="role_id" property="RoleId" jdbcType="VARCHAR"/>
+        <result column="permission_id" property="PermissionId" jdbcType="VARCHAR"/>
+        <result column="operator" property="Operator" jdbcType="VARCHAR"/>
+        <result column="func_id" property="FuncId" jdbcType="VARCHAR"/>
+        <result column="state" property="State" jdbcType="VARCHAR"/>
+        <result column="permission" property="Permission" jdbcType="VARCHAR"/>
+        <result column="order_id" property="OrderId" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="ParentId" jdbcType="VARCHAR"/>
+        <result column="menu_name" property="MenuName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="qryRolePermission"  parameterType="map" resultMap="roleList">
+    SELECT
+        rp.role_id,
+        rp.permission_id,
+        rp.operator,
+        p.func_id,
+        p.state,
+        p.permission,
+        m.order_id,
+        m.parent_id,
+        m.menu_name
+    from
+        role_permission rp
+    left join permission p on p.permission_id = rp.permission_id
+    left join menu m on m.menu_id = p.func_id
+    where
+        rp.role_id = #{RoleId}
+        and p.state = #{State}
+    ORDER BY m.order_id
+    </select>
+
+</mapper>

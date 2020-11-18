@@ -1,0 +1,26 @@
+#mysql
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:  jdbc:mysql://localhost:3306/platform?serverTimezone=GMT%2B8
+    username: root
+    password: admin
+
+mybatis:
+  mapper-locations: classpath:mapper/*/*Mapper.xml
+  type-aliases-package: com.ksrcb.api.*.model
+
+
+logging:
+  level:
+    com.ksrcb.api.biz.mapper: debug
+
+# pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+server:
+  port: 8082
